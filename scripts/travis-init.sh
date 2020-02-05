@@ -19,7 +19,7 @@ pipfile=${1:-apps/common/pip.conf}
 # create pip.conf with secrets for mounting into docker image
 echo "Placing pip.conf with private python repo creds in ${pipfile}"
 mkdir -p apps/common && \
-    printf "[global]\nindex-url = https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/quid/api/pypi/pypi/simple\ntrusted-host = quid.jfrog.io\n" > ${pipfile}
+    printf "[global]\nindex-url = https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/repository/pypi/simple\ntrusted-host = nexus.quid.com\n" > ${pipfile}
 
 # install latest version of docker (for buildkit support)
 echo "Installing latest docker release"
