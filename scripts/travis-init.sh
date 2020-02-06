@@ -6,6 +6,10 @@ set -e
 
 echo "Setting up travis build environment"
 
+if [[ -z $ARTIFACTORY_USER ]]; then
+  ARTIFACTORY_USER=$$ARTIFACTORY_USERNAME
+fi  
+
 if [[ -z $ARTIFACTORY_PASSWORD || -z $ARTIFACTORY_USER || -z $ARTIFACTORY_URL || -z $PYPI_ARTIFACTORY_URL ]]; then
   echo 'The environment variables ARTIFACTORY_PASSWORD, ARTIFACTORY_USER, ARTIFACTORY_URL, and PYPI_ARTIFACTORY_URL must be set'
   exit 1
