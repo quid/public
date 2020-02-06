@@ -7,7 +7,7 @@ set -e
 echo "Setting up travis build environment"
 
 if [[ -z $ARTIFACTORY_USER ]]; then
-  ARTIFACTORY_USER=$$ARTIFACTORY_USERNAME
+  ARTIFACTORY_USER=$ARTIFACTORY_USERNAME
 fi  
 
 if [[ -z $ARTIFACTORY_PASSWORD || -z $ARTIFACTORY_USER || -z $ARTIFACTORY_URL || -z $PYPI_ARTIFACTORY_URL ]]; then
