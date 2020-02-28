@@ -10,7 +10,16 @@ if [[ -z $ARTIFACTORY_USER ]]; then
   ARTIFACTORY_USER=$ARTIFACTORY_USERNAME
 fi  
 
-if [[ -z $ARTIFACTORY_PASSWORD || -z $ARTIFACTORY_USER || -z $ARTIFACTORY_URL || -z $PYPI_ARTIFACTORY_URL ]]; then
+if [[ -z $ARTIFACTORY_URL ]]; then
+  export ARTIFACTORY_URL="docker.quid.com"
+fi
+
+if [[ -z $PYPI_ARTIFACTORY_URL ]]; then
+  export PYPI_ARTIFACTORY_URL="nexus.quid.com"
+fi
+
+
+if [[ -z $ARTIFACTORY_PASSWORD || -z $ARTIFACTORY_USER ]]; then
   echo 'The environment variables ARTIFACTORY_PASSWORD, ARTIFACTORY_USER, ARTIFACTORY_URL, and PYPI_ARTIFACTORY_URL must be set'
   exit 1
 fi
