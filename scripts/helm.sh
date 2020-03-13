@@ -35,15 +35,15 @@ function _validate_variables() {
     fi
   fi
 
-  # Thorws error if DOCKER_USERNAME not provided
-  if [ -z "$DOCKER_USERNAME" ]; then
-    echo "Error: Must provide DOCKER_USERNAME"
+  # Thorws error if ARTIFACTORY_USERNAME not provided
+  if [ -z "$ARTIFACTORY_USERNAME" ]; then
+    echo "Error: Must provide ARTIFACTORY_USERNAME"
     exit 1
   fi
 
-  # Thorws error if DOCKER_PASSWORD not provided
-  if [ -z "$DOCKER_PASSWORD" ]; then
-    echo "Error: Must provide DOCKER_PASSWORD"
+  # Thorws error if ARTIFACTORY_PASSWORD not provided
+  if [ -z "$ARTIFACTORY_PASSWORD" ]; then
+    echo "Error: Must provide ARTIFACTORY_PASSWORD"
     exit 1
   fi
 }
@@ -59,7 +59,7 @@ function publish () {
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
   helm package --version=$(VERSION) --app-version=$(APP_VERSION) chart/${APP_NAME}
-	curl -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} -T ${APP_NAME}-$(VERSION).tgz "https://nexus.quid.com/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
+	curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T ${APP_NAME}-$(VERSION).tgz "https://nexus.quid.com/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
 	cd chart/${APP_NAME} && \
-	for d in values*; do { curl -u ${DOCKER_USERNAME}:${DOCKER_PASSWORD} -T $d "https://nexus.quid.com/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/$d"; } done
+	for d in values*; do { curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T $d "https://nexus.quid.com/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/$d"; } done
 }
