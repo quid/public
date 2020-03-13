@@ -19,8 +19,8 @@ function validate_variables() {
       exit 1
     else
       # default values
-      VERSION=$(date +%y.%m.%d)-${$TRAVIS_COMMIT}
-      APP_VERSION=${$TRAVIS_COMMIT}
+      VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
+      APP_VERSION=${TRAVIS_COMMIT}
     fi
   fi
 
