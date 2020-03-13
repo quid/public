@@ -12,31 +12,29 @@ function validate_variables() {
     exit 1
   fi
 
-  # Thorws error if IMAGE_TAG not provided
-  if [[ -z "$IMAGE_TAG" ]];  then
-    if [[ -z "$VERSION" ]] && [[ -z "$APP_VERSION" ]]; then
-      echo "Error: One of VERION & APP_VERSION or IMAGE_TAG must be provided"
+  # Thorws error if TRAVIS_COMMIT not provided
+  if [[ -z "$VERSION" ]] && [[ -z "$APP_VERSION" ]]; then
+    if [[ -z "$TRAVIS_COMMIT"]]; then
+      echo "Error: One of VERSION & APP_VERSION or TRAVIS_COMMIT must be provided"
       exit 1
+    else
+      # default values
+      VERSION=$(date +%y.%m.%d)-${$TRAVIS_COMMIT}
+      APP_VERSION=${$TRAVIS_COMMIT}
     fi
-  else
-    # default values
-    VERSION=$(date +%y.%m.%d)-${IMAGE_TAG}
-    APP_VERSION=${IMAGE_TAG}
   fi
 
-
-  # Thorws error if IMAGE_TAG not provided
+  # Thorws error if DOCKER_USERNAME not provided
   if [ -z "$DOCKER_USERNAME" ]; then
     echo "Error: Must provide DOCKER_USERNAME"
     exit 1
   fi
 
-  # Thorws error if IMAGE_TAG not provided
+  # Thorws error if DOCKER_PASSWORD not provided
   if [ -z "$DOCKER_PASSWORD" ]; then
     echo "Error: Must provide DOCKER_PASSWORD"
     exit 1
   fi
-
 }
 
 function publish () {
@@ -44,8 +42,7 @@ function publish () {
   ## Create helm package and publish it to Artifactory
   ## Usage: curl -O https://raw.githubusercontent.com/quid/public/introudction-to-helm/scripts/helm.sh; source helm.sh; publish
 
-
-  validate_variables
+  validate_variables #
 
   APP_NAME = $(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
