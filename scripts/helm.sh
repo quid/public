@@ -5,7 +5,7 @@ function _set_variables() {
 
   ## internal func: Sets variables needed for running helm pacakge
 
-  APP_NAME = $(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
+  APP_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
   if [[ -z "$TRAVIS_TAG" ]]; then
       VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
