@@ -7,10 +7,9 @@ function _set_variables() {
 
   APP_NAME = $(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
-  if [[ -z "$TRAVIS_TAG" ]] then
+  if [[ -z "$TRAVIS_TAG" ]]; then
       VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
       APP_VERSION=${TRAVIS_COMMIT}
-    fi
   else
     VERSION=${TRAVIS_TAG}
     APP_VERSION=${TRAVIS_TAG}
@@ -29,7 +28,7 @@ function _validate_variables() {
     exit 1
   fi
 
-  if [[ -z "$TRAVIS_TAG" ]] then
+  if [[ -z "$TRAVIS_TAG" ]]; then
     if [[ -z "$TRAVIS_COMMIT" ]]; then
       echo "Error: One of TRAVIS_COMMIT OR TRAVIS_TAG must be present"
       exit 1
