@@ -28,6 +28,7 @@ function _validate_variables() {
     exit 1
   fi
 
+  # Thorws error if TRAVIS_TAG as well as TRAVIS_COMMIT is not present
   if [[ -z "$TRAVIS_TAG" ]]; then
     if [[ -z "$TRAVIS_COMMIT" ]]; then
       echo "Error: One of TRAVIS_COMMIT OR TRAVIS_TAG must be present"
