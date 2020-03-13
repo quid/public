@@ -14,7 +14,7 @@ function validate_variables() {
 
   # Thorws error if TRAVIS_COMMIT not provided
   if [[ -z "$VERSION" ]] && [[ -z "$APP_VERSION" ]]; then
-    if [[ -z "$TRAVIS_COMMIT"]]; then
+    if [[ -z "$TRAVIS_COMMIT" ]]; then
       echo "Error: One of VERSION & APP_VERSION or TRAVIS_COMMIT must be provided"
       exit 1
     else
