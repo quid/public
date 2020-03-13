@@ -5,6 +5,8 @@ function _set_variables() {
 
   ## internal func: Sets variables needed for running helm pacakge
 
+  echo "Intialising variables needed for HELM Publish"
+
   APP_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
   if [[ -z "$TRAVIS_TAG" ]]; then
@@ -20,6 +22,8 @@ function _set_variables() {
 function _validate_variables() {
 
   ## internal func: Validates all required variables exist
+
+  echo "Validating input variables needed for HELM Publish"
 
   # Thorws error if TRAVIS_REPO_SLUG not provided
   # Expected format: "quid/APP_NAME" eg: "quid/quid_datadog"
