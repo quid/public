@@ -5,9 +5,10 @@ function validate_variables() {
 
   # Validate needful variables, set defaults where possible
 
-  # Thorws error if APP_NAME not provided
-  if [[ -z "$APP_NAME" ]]; then
-    echo "Must provide APP_NAME" 1>&2
+  # Thorws error if TRAVIS_REPO_SLUG not provided
+  # Expected format: "quid/APP_NAME" eg: "quid/quid_datadog"
+  if [ -z "$TRAVIS_REPO_SLUG" ]; then
+    echo "Error: Must provide TRAVIS_REPO_SLUG"
     exit 1
   fi
 
@@ -26,24 +27,27 @@ function validate_variables() {
 
   # Thorws error if IMAGE_TAG not provided
   if [ -z "$DOCKER_USERNAME" ]; then
-    echo "Must provide DOCKER_USERNAME"
+    echo "Error: Must provide DOCKER_USERNAME"
     exit 1
   fi
 
   # Thorws error if IMAGE_TAG not provided
   if [ -z "$DOCKER_PASSWORD" ]; then
-    echo "Must provide DOCKER_PASSWORD"
+    echo "Error: Must provide DOCKER_PASSWORD"
     exit 1
   fi
 
 }
 
-
 function publish () {
 
   ## Create helm package and publish it to Artifactory
+  ## Usage: curl -O https://raw.githubusercontent.com/quid/public/introudction-to-helm/scripts/helm.sh; source helm.sh; publish
+
 
   validate_variables
+
+  APP_NAME = $(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
