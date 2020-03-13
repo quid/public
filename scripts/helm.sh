@@ -25,6 +25,11 @@ function _validate_variables() {
 
   echo "Validating input variables needed for HELM Publish"
 
+  if [ -z "$ARTIFACTORY_URL" ]; then
+    echo "Error: Must provide ARTIFACTORY_URL"
+    exit 1
+  fi
+
   # Thorws error if TRAVIS_REPO_SLUG not provided
   # Expected format: "quid/APP_NAME" eg: "quid/quid_datadog"
   if [ -z "$TRAVIS_REPO_SLUG" ]; then
@@ -64,7 +69,7 @@ function publish () {
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
   helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
-	curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T ${APP_NAME}-${VERSION}.tgz "https://nexus.quid.com/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
+	curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T ${APP_NAME}-${VERSION}.tgz "https://${ARTIFACTORY_URL}/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
 	cd chart/${APP_NAME} && \
-	for d in values*; do { curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T $d "https://nexus.quid.com/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/$d"; } done
+	for d in values*; do { curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T $d "https://${ARTIFACTORY_URL}/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/$d"; } done
 }
