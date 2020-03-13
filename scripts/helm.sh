@@ -1,9 +1,26 @@
 #!/bin/bash
 # All HELM related common logic should be kept here
 
-function validate_variables() {
+function _set_variables() {
 
-  # Validate needful variables, set defaults where possible
+  ## internal func: Sets variables needed for running helm pacakge
+
+  APP_NAME = $(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
+
+  if [[ -z "$TRAVIS_TAG" ]] then
+      VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
+      APP_VERSION=${TRAVIS_COMMIT}
+    fi
+  else
+    VERSION=${TRAVIS_TAG}
+    APP_VERSION=${TRAVIS_TAG}
+  fi
+
+}
+
+function _validate_variables() {
+
+  ## internal func: Validates all required variables exist
 
   # Thorws error if TRAVIS_REPO_SLUG not provided
   # Expected format: "quid/APP_NAME" eg: "quid/quid_datadog"
@@ -12,15 +29,10 @@ function validate_variables() {
     exit 1
   fi
 
-  # Thorws error if TRAVIS_COMMIT not provided
-  if [[ -z "$VERSION" ]] && [[ -z "$APP_VERSION" ]]; then
+  if [[ -z "$TRAVIS_TAG" ]] then
     if [[ -z "$TRAVIS_COMMIT" ]]; then
-      echo "Error: One of VERSION & APP_VERSION or TRAVIS_COMMIT must be provided"
+      echo "Error: One of TRAVIS_COMMIT OR TRAVIS_TAG must be present"
       exit 1
-    else
-      # default values
-      VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
-      APP_VERSION=${TRAVIS_COMMIT}
     fi
   fi
 
@@ -42,9 +54,8 @@ function publish () {
   ## Create helm package and publish it to Artifactory
   ## Usage: curl -O https://raw.githubusercontent.com/quid/public/introudction-to-helm/scripts/helm.sh; source helm.sh; publish
 
-  validate_variables #
-
-  APP_NAME = $(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
+  _validate_variables # interal func: Validates all required variables exist
+  _set_variables # internal func: Sets variables needed for running helm pacakge
 
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
