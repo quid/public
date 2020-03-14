@@ -7,7 +7,7 @@ function _set_variables() {
 
   echo "Initializing variables needed for HELM Publish"
 
-  APP_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
+  APP_NAME=$(ls chart)
 
   if [[ -z $HELM_ARTIFACTORY_DOMAIN ]]; then
     HELM_ARTIFACTORY_DOMAIN="nexus.quid.com"
