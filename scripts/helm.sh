@@ -9,6 +9,14 @@ function _set_variables() {
 
   APP_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
+  if [[ -z $HELM_ARTIFACTORY_DOMAIN ]]; then
+    HELM_ARTIFACTORY_DOMAIN="nexus.quid.com"
+  fi
+
+  if [[ -z $HELM_ARTIFACTORY_PATH ]]; then
+    HELM_ARTIFACTORY_PATH="repository/quid-helm/quid"
+  fi
+
   if [[ -z "$TRAVIS_TAG" ]]; then
       VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
       APP_VERSION=${TRAVIS_COMMIT}
@@ -25,8 +33,8 @@ function _validate_variables() {
 
   echo "Validating input variables needed for HELM Publish"
 
-  if [ -z "$ARTIFACTORY_URL" ]; then
-    echo "Error: Must provide ARTIFACTORY_URL"
+  if [ -z "$HELM_ARTIFACTORY_DOMAIN" ]; then
+    echo "Error: Must provide HELM_ARTIFACTORY_DOMAIN"
     exit 1
   fi
 
@@ -69,7 +77,7 @@ function publish () {
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
   helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
-	curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T ${APP_NAME}-${VERSION}.tgz "https://${ARTIFACTORY_URL}/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
+	curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T ${APP_NAME}-${VERSION}.tgz "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_DOMAIN}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
 	cd chart/${APP_NAME} && \
-	for d in values*; do { curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T $d "https://${ARTIFACTORY_URL}/repository/quid-helm/quid/${APP_NAME}/${APP_VERSION}/$d"; } done
+	for d in values*; do { curl -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T $d "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_DOMAIN}/${APP_NAME}/${APP_VERSION}/$d"; } done
 }
