@@ -5,7 +5,7 @@ function _set_variables() {
 
   ## internal func: Sets variables needed for running helm pacakge
 
-  echo "Intialising variables needed for HELM Publish"
+  echo "Initializing variables needed for HELM Publish"
 
   APP_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d"/" -f2)
 
