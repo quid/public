@@ -33,18 +33,6 @@ function _validate_variables() {
 
   echo "Validating input variables needed for HELM Publish"
 
-  if [ -z "$HELM_ARTIFACTORY_DOMAIN" ]; then
-    echo "Error: Must provide HELM_ARTIFACTORY_DOMAIN"
-    exit 1
-  fi
-
-  # Thorws error if TRAVIS_REPO_SLUG not provided
-  # Expected format: "quid/APP_NAME" eg: "quid/quid_datadog"
-  if [ -z "$TRAVIS_REPO_SLUG" ]; then
-    echo "Error: Must provide TRAVIS_REPO_SLUG"
-    exit 1
-  fi
-
   # Thorws error if TRAVIS_TAG as well as TRAVIS_COMMIT is not present
   if [[ -z "$TRAVIS_TAG" ]]; then
     if [[ -z "$TRAVIS_COMMIT" ]]; then
