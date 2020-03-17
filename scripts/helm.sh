@@ -69,3 +69,5 @@ function publish () {
 	cd chart/${APP_NAME} && \
 	for d in values*; do { curl -v -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T $d "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"; } done
 }
+
+publish
