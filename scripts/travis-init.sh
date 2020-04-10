@@ -37,8 +37,8 @@ mkdir -p apps/common && \
 # install latest version of docker (for buildkit support)
 echo "Installing latest docker release"
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get update
-sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+sudo apt-get -qq update
+sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 # enable buildkit
 export DOCKER_BUILDKIT=1
