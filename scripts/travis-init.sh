@@ -8,7 +8,7 @@ echo "Setting up travis build environment"
 
 if [[ -z $ARTIFACTORY_USER ]]; then
   ARTIFACTORY_USER=$ARTIFACTORY_USERNAME
-fi  
+fi
 
 if [[ -z $ARTIFACTORY_URL ]]; then
   export ARTIFACTORY_URL="docker.quid.com"
@@ -42,8 +42,8 @@ sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 # install 1.25 version of docker-compose (for buildkit support)
 echo "Installing 1.25.4 version of docker-compose"
-curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-echo docker-compose version
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+docker-compose version
 
 # enable buildkit
 export DOCKER_BUILDKIT=1
