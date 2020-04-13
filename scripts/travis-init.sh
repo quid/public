@@ -40,6 +40,11 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get -qq update
 sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
+# install 1.25 version of docker-compose (for buildkit support)
+echo "Installing 1.25.4 version of docker-compose"
+curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+echo docker-compose version
+
 # enable buildkit
 export DOCKER_BUILDKIT=1
 
