@@ -1,7 +1,7 @@
 #!/bin/bash
 # Initialization script for travis ci jobs
 # Sets up access to Quid's python package and docker repos on artifactory. Also configures the environment to support buildkit (see https://docs.docker.com/develop/develop-images/build_enhancements/)
-
+# Usage: source <(curl https://raw.githubusercontent.com/quid/public/master/scripts/travis-init.sh)
 set -e
 
 echo "Setting up travis build environment"
@@ -41,8 +41,10 @@ sudo apt-get -qq update
 sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 # install 1.25 version of docker-compose (for buildkit support)
-echo "Installing 1.25.4 version of docker-compose"
-sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# https://github.com/docker/compose/releases/tag/1.25.0
+DOCKER_COMPOSE_VERSION=1.25.4
+echo "Installing ${DOCKER_COMPOSE_VERSION} version of docker-compose"
+sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 docker-compose version
 
 # enable buildkit
