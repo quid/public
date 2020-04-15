@@ -49,7 +49,7 @@ docker-compose version
 
 # enable buildkit
 export DOCKER_BUILDKIT=1
-
+export COMPOSE_DOCKER_CLI_BUILD=1
 # clear out the setting 'registry-mirrors' from docker config file which causes buildkit to fail
 # see https://github.com/moby/moby/issues/39120
 sudo bash -c "echo '{}' > /etc/docker/daemon.json"
