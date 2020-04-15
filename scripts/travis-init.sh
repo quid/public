@@ -18,6 +18,9 @@ if [[ -z $PYPI_ARTIFACTORY_URL ]]; then
   export PYPI_ARTIFACTORY_URL="nexus.quid.com"
 fi
 
+if [[ -z $DOCKER_COMPOSE_VERSION ]]; then
+  export DOCKER_COMPOSE_VERSION=1.25.4
+fi
 
 if [[ -z $ARTIFACTORY_PASSWORD || -z $ARTIFACTORY_USER ]]; then
   echo 'The environment variables ARTIFACTORY_PASSWORD, ARTIFACTORY_USER, ARTIFACTORY_URL, and PYPI_ARTIFACTORY_URL must be set'
@@ -42,7 +45,6 @@ sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 # install 1.25 version of docker-compose (for buildkit support)
 # https://github.com/docker/compose/releases/tag/1.25.0
-DOCKER_COMPOSE_VERSION=${1:-1.25.4}
 echo "Installing ${DOCKER_COMPOSE_VERSION} version of docker-compose"
 sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 docker-compose version
