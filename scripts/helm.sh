@@ -41,6 +41,10 @@ function _validate_variables() {
     fi
   fi
 
+  if [[ -z $ARTIFACTORY_USERNAME ]]; then
+    ARTIFACTORY_USERNAME=$ARTIFACTORY_USER
+  fi
+
   # Thorws error if ARTIFACTORY_USERNAME not provided
   if [ -z "$ARTIFACTORY_USERNAME" ]; then
     echo "Error: Must provide ARTIFACTORY_USERNAME"
