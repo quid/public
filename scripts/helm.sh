@@ -61,7 +61,7 @@ function _validate_variables() {
 function publish () {
 
   ## Create helm package and publish it to Artifactory
-  ## Usage: curl -O https://raw.githubusercontent.com/quid/public/introudction-to-helm/scripts/helm.sh; source helm.sh; publish
+  ## Usage: curl -s https://raw.githubusercontent.com/quid/public/introudction-to-helm/scripts/helm.sh | bash
 
   _validate_variables # interal func: Validates all required variables exist
   _set_variables # internal func: Sets variables needed for running helm pacakge
@@ -69,12 +69,16 @@ function publish () {
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
   helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
-  curl -v -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} -T ${APP_NAME}-${VERSION}.tgz "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
+  echo "Uploading Charts to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
+  curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
+    -T ${APP_NAME}-${VERSION}.tgz -w "%{http_code}" \
+    "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
 
   cd chart/${APP_NAME} && \
   for d in values*; do { 
-    curl -v -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
-      -T $d \
+    echo "Uploading Values to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"  
+    curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
+      -T $d -w "%{http_code}" \
       "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"; 
   } done
 }
