@@ -36,6 +36,11 @@ pipfile=${1:-apps/common/pip.conf}
 echo "Placing pip.conf with private python repo creds in ${pipfile}"
 mkdir -p apps/common && \
     printf "[global]\nindex-url = https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/repository/pypi/simple\ntrusted-host = nexus.quid.com\n" > ${pipfile}
+# set the pip_index_url env var
+if [[ -z $PIP_INDEX_URL ]]; then
+  export PIP_INDEX_URL=https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/repository/pypi/simple
+fi
+
 
 # install latest version of docker (for buildkit support)
 echo "Installing latest docker release"
