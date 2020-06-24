@@ -31,15 +31,14 @@ fi
 echo "Logging into artifactory docker repo"
 echo $ARTIFACTORY_PASSWORD | docker login -u $ARTIFACTORY_USER --password-stdin $ARTIFACTORY_URL
 
+# Configure pip
 pipfile=${1:-apps/common/pip.conf}
+# The PIP_INDEX_URL env var is required by builds that use pipenv. 
+export PIP_INDEX_URL=${PIP_INDEX_URL:-https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/repository/pypi/simple}
 # create pip.conf with secrets for mounting into docker image
-echo "Placing pip.conf with private python repo creds in ${pipfile}"
+echo "Setting PIP_INDEX_URL env var and placing pip.conf with private python repo creds in ${pipfile}"
 mkdir -p apps/common && \
-    printf "[global]\nindex-url = https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/repository/pypi/simple\ntrusted-host = nexus.quid.com\n" > ${pipfile}
-# set the pip_index_url env var
-if [[ -z $PIP_INDEX_URL ]]; then
-  export PIP_INDEX_URL=https://$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD@$PYPI_ARTIFACTORY_URL/repository/pypi/simple
-fi
+    printf "[global]\nindex-url = ${PIP_INDEX_URL}\ntrusted-host = nexus.quid.com\n" > ${pipfile}
 
 
 # install latest version of docker (for buildkit support)
