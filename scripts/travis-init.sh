@@ -4,6 +4,26 @@
 # Usage: source <(curl https://raw.githubusercontent.com/quid/public/master/scripts/travis-init.sh)
 set -e
 
+setup_version_tag() {
+  # Reads the current version from .bumpversion.cfg and stores it in 
+  # the environment variable STACK_VERSION
+  
+  echo "Setting up STACK_VERSION environment variable"
+  unset STACK_VERSION
+  # try to extract the version from bumpversion
+  if test -f ".bumpversion.cfg"; then
+    STACK_VERSION=$(cat .bumpversion.cfg | sed -En 's/^current_version[ ]*=[ ]*([0-9].[0-9].[0-9])$/\1/p')
+  fi
+  
+  if [ -z "$STACK_VERSION" ]; then
+    echo "Warning: Failed to parse version tag from .bumpversion.cfg"
+  else
+    echo "Successfully parsed version '${STACK_VERSION}' from .bumpversion.cfg"
+    echo "Running: export STACK_VERSION=${STACK_VERSION}"
+    export STACK_VERSION=${STACK_VERSION}
+  fi
+}
+
 echo "Setting up travis build environment"
 
 if [[ -z $ARTIFACTORY_USER ]]; then
@@ -62,5 +82,7 @@ sudo bash -c "echo '{}' > /etc/docker/daemon.json"
 
 echo "Restarting Docker service"
 sudo service docker restart
+
+setup_version_tag
 
 echo "Travis initialization complete"
