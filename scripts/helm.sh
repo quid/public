@@ -1,6 +1,13 @@
 #!/bin/bash
 # All HELM related common logic should be kept here
 
+function update_script() {
+    ## Updates this script
+    ## Usage: ./helm.sh update_script
+    mkdir -p ./bin
+    curl https://raw.githubusercontent.com/quid/public/master/scripts/helm.sh > ./bin/helm.sh
+}
+
 function _set_variables() {
 
   ## internal func: Sets variables needed for running helm pacakge
@@ -61,7 +68,7 @@ function _validate_variables() {
 function publish () {
 
   ## Create helm package and publish it to Artifactory
-  ## Usage: curl -s https://raw.githubusercontent.com/quid/public/introudction-to-helm/scripts/helm.sh | bash
+  ## Usage: ./helm.sh publish
 
   _validate_variables # interal func: Validates all required variables exist
   _set_variables # internal func: Sets variables needed for running helm pacakge
@@ -83,4 +90,12 @@ function publish () {
   } done
 }
 
-publish
+if [ "$1" == "publish" ]; then
+    echo "Publishing package to artifactory"
+    publish
+elif [ "$1" == "update_script" ]; then
+    echo "Updating helm publish script"
+    update_script
+else
+    echo "Unknown commmand '$1'"
+fi
