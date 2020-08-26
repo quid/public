@@ -3,12 +3,6 @@ set -ex
 
 export DOCKER_HOST="unix:///var/snap/microk8s/current/docker.sock"
 
-echo ">>> Start microk8s and check its status"
-microk8s.start
-microk8s.status --wait-ready
-microk8s.enable storage dns
-microk8s.inspect
-
 sudo microk8s enable helm3
 
 sudo snap alias microk8s.helm3 helm
