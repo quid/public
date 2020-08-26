@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -ex
 
+export DOCKER_HOST="unix:///var/snap/microk8s/current/docker.sock"
+
 echo ">>> Start microk8s and check its status"
 microk8s.start
 microk8s.status --wait-ready
