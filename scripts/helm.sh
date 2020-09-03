@@ -68,6 +68,8 @@ function publish () {
 
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
+  yq write -i chart/${APP_NAME}/values.yaml global.image.tag "${APP_VERSION}"
+
   helm dependency update chart/${APP_NAME}
   helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
   echo "Uploading Charts to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
