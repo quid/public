@@ -17,14 +17,8 @@ function _set_variables() {
     HELM_ARTIFACTORY_PATH="repository/quid-helm/quid"
   fi
 
-  if [[ -z "$TRAVIS_TAG" ]]; then
-      VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
-      APP_VERSION=${TRAVIS_COMMIT}
-  else
-    VERSION=${TRAVIS_TAG}
-    APP_VERSION=${TRAVIS_TAG}
-  fi
-
+  VERSION=$(date +%y.%m.%d)-${TRAVIS_COMMIT}
+  APP_VERSION=${TRAVIS_COMMIT}
 }
 
 function _validate_variables() {
@@ -33,12 +27,10 @@ function _validate_variables() {
 
   echo "Validating input variables needed for HELM Publish"
 
-  # Thorws error if TRAVIS_TAG as well as TRAVIS_COMMIT is not present
-  if [[ -z "$TRAVIS_TAG" ]]; then
-    if [[ -z "$TRAVIS_COMMIT" ]]; then
-      echo "Error: One of TRAVIS_COMMIT OR TRAVIS_TAG must be present"
-      exit 1
-    fi
+  # Thorws error if TRAVIS_COMMIT is not present
+  if [[ -z "$TRAVIS_COMMIT" ]]; then
+    echo "Error: TRAVIS_COMMIT must be present"
+    exit 1
   fi
 
   if [[ -z $ARTIFACTORY_USERNAME ]]; then
