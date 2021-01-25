@@ -60,7 +60,7 @@ function publish () {
 
   echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
-  yq write -i chart/${APP_NAME}/values.yaml global.image.tag "${APP_VERSION}" || true
+  yq eval -i ".global.image.tag=\"${APP_VERSION}\"" chart/${APP_NAME}/values.yaml || true
 
   helm dependency update chart/${APP_NAME}
   helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
