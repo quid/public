@@ -60,6 +60,7 @@ function publish () {
 
   for APP_NAME in "${APP_NAMES[@]}"
   do
+    PWD=$(pwd)
     echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
     yq eval -i ".global.image.tag=\"${APP_VERSION}\"" chart/${APP_NAME}/values.yaml || true
@@ -78,7 +79,7 @@ function publish () {
         -T $d -w "%{http_code}" \
         "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d";
     } done
-    pushd
+    cd /${PWD}
   done
 }
 
