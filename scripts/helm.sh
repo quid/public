@@ -7,7 +7,7 @@ function _set_variables() {
 
   echo "Initializing variables needed for HELM Publish"
 
-  APP_NAME=$(ls chart)
+  APP_NAMES=($(ls chart))
 
   if [[ -z $HELM_ARTIFACTORY_DOMAIN ]]; then
     HELM_ARTIFACTORY_DOMAIN="nexus.quid.com"
@@ -58,24 +58,28 @@ function publish () {
   _validate_variables # interal func: Validates all required variables exist
   _set_variables # internal func: Sets variables needed for running helm pacakge
 
-  echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
+  for APP_NAME in "${APP_NAMES[@]}"
+  do
+    echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
-  yq eval -i ".global.image.tag=\"${APP_VERSION}\"" chart/${APP_NAME}/values.yaml || true
+    yq eval -i ".global.image.tag=\"${APP_VERSION}\"" chart/${APP_NAME}/values.yaml || true
 
-  helm dependency update chart/${APP_NAME}
-  helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
-  echo "Uploading Charts to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
-  curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
-    -T ${APP_NAME}-${VERSION}.tgz -w "%{http_code}" \
-    "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
-
-  cd chart/${APP_NAME} && \
-  for d in values*; do { 
-    echo "Uploading Values to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"  
+    helm dependency update chart/${APP_NAME}
+    helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
+    echo "Uploading Charts to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
     curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
-      -T $d -w "%{http_code}" \
-      "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"; 
-  } done
+      -T ${APP_NAME}-${VERSION}.tgz -w "%{http_code}" \
+      "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
+
+    cd chart/${APP_NAME} && \
+    for d in values*; do {
+      echo "Uploading Values to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"
+      curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
+        -T $d -w "%{http_code}" \
+        "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d";
+    } done
+    pushd
+  done
 }
 
 publish
