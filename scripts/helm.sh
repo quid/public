@@ -60,7 +60,7 @@ function publish () {
 
   for APP_NAME in "${APP_NAMES[@]}"
   do
-    PWD=$(pwd)
+    WORKDIR=$(pwd)
     echo "Packaging Helm for APP: ${APP_NAME}, VERSION: ${VERSION}, APP_VERSION: ${APP_VERSION}"
 
     yq eval -i ".global.image.tag=\"${APP_VERSION}\"" chart/${APP_NAME}/values.yaml || true
@@ -69,17 +69,17 @@ function publish () {
     helm package --version=${VERSION} --app-version=${APP_VERSION} chart/${APP_NAME}
     echo "Uploading Charts to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
     curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
-      -T ${APP_NAME}-${VERSION}.tgz -w "%{http_code}" \
+      -T ${APP_NAME}-${VERSION}.tgz -w "http_code: %{http_code}\n" \
       "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/${APP_VERSION}.tgz"
 
     cd chart/${APP_NAME} && \
     for d in values*; do {
       echo "Uploading Values to https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d"
       curl -s -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} \
-        -T $d -w "%{http_code}" \
+        -T $d -w "http_code: %{http_code}\n" \
         "https://${HELM_ARTIFACTORY_DOMAIN}/${HELM_ARTIFACTORY_PATH}/${APP_NAME}/${APP_VERSION}/$d";
     } done
-    cd /${PWD}
+    cd ${WORKDIR}
   done
 }
 
