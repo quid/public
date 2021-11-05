@@ -47,6 +47,9 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get -qq update
 sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
+# fix openssl cert issue
+sudo apt-get install libgnutls-openssl27 libgnutls30 ubuntu-advantage-tools
+
 # install 1.25 version of docker-compose (for buildkit support)
 # https://github.com/docker/compose/releases/tag/1.25.0
 echo "Installing ${DOCKER_COMPOSE_VERSION} version of docker-compose"
